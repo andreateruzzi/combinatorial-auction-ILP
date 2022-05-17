@@ -136,8 +136,5 @@ module CAP
         model = Nothing
 
     end
-    
-   
-
 
 end
