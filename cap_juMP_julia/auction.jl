@@ -24,22 +24,21 @@ module CAP
         #    or
         #  2) for m^2 where m=|set|
 
-        #HP: ∀ j in bidders V_j(set) = |set| + random(1:2*|set|)  
-        
+        #HP:  v_j(set) = f(|set|) - ⌈random()⌉
+        #    
+                        
         valuations = []
         for b in 1:n_bidders
-            val = Dict{ Vector{String} , Float64}()
             pwrset = powerset(M)
             if subset==true && size(M)[1]>4
-                pwrset = sample(pwrset, size(M)[1]^2, replace=false)
+                pwrset = sample(pwrset, size(M)[1]^2, replace=false)                     
             end
-            for set in pwrset
-               val[set]= size(set)[1] + rand(1:size(set)[1])
-            end
-            append!(valuations, [val])   
+            val = collect(1:size(pwrset)[1]) .- rand(1:Int(ceil(sqrt( size(pwrset)[1]))))
+            val[val .≤ 0] .=1
+            sort!(pwrset, by = x -> size(x)[1])
+            append!( valuations, [Dict(zip(pwrset,val))] )   
         end
         return valuations
-    
     end
 
     function winner(valuations::Vector{Dict{Vector, Int64}})::Dict{Vector, Int64}
@@ -138,3 +137,5 @@ module CAP
     end
 
 end
+
+
