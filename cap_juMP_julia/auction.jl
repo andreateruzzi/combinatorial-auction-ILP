@@ -139,7 +139,8 @@ module CAP
 
 
     function greedy_solver(M::Vector{String}, S::Dict{Vector, Int64})
-        
+        # M is the ground set of items
+        # S is a dictionary with some valuations
         l = sort(collect(keys(S)), by = x -> S[x]/sqrt(size(x)[1]), rev=true)
         W=[]
         z=0
@@ -148,7 +149,6 @@ module CAP
                 append!(W, [set]) 
                 setdiff!(M,set)
                 z+=S[set]
-            
             end
         end
         return W, z
