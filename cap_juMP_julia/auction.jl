@@ -48,7 +48,7 @@ module CAP
         end
         S = Dict{Vector{String} , Float64}()
         S = DefaultDict(0, S) 
-        for v in valuations
+        for v in valuations             #generally n_bidders << n_items
             for set in keys(v)
                 if v[set] > S[set]
                     S[set] = v[set]
@@ -63,9 +63,9 @@ module CAP
 
         #given a number m of items and n bidders, returns:
         # 1) Ground set M with |M|=m
-        # 2) Vector with n valuations from n random sample of [powerset(M)].
-        #   perc=0 => 0 sample=∅        perc=0 => sample=[powerset(M)]
-        # 3) Best bid for each subset in each valuation
+        # 2) Vector with n valuations(dictionary) from n random sample of [powerset(M)].
+        #   subset=true => 0 |sample| = m^2       subset=false => 0 |sample| = |powerset(M)| = 2^m
+        # 3) Best bid for each subset in each valuation, in the form of 1 dictionary.
 
         M = gen_items(m)
         if subset==false
@@ -120,10 +120,12 @@ module CAP
 
         #checking duplicate in assigned items
         items = [ ]
+        winner = [ ]
         for set in l
             if value(x[set]) > 0.9
+                append!(winner, [set])
                 if display==true
-                    println(set, " = ", round(value(x[set])))
+                    println(set, " = ", round(value(x[set])), "\n")
                 end
                 append!(items, set)
             end
@@ -131,11 +133,24 @@ module CAP
 
         items=sort(items)
         @assert(items==unique(items))
-
-        model = Nothing
-
+    return  winner, objective_value(model)
     end
 
+
+
+    function greedy_solver(M::Vector{String}, S::Dict{Vector, Int64})
+        
+        l = sort(collect(keys(S)), by = x -> S[x]/sqrt(size(x)[1]), rev=true)
+        W=[]
+        z=0
+        for set in l
+            if intersect(M, set) == set
+                append!(W, [set]) 
+                setdiff!(M,set)
+                z+=S[set]
+            
+            end
+        end
+        return W, z
+    end
 end
-
-
