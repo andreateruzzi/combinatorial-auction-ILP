@@ -83,9 +83,9 @@ module CAP
     end
 
     function cap_solver(M::Vector{String}, S::Dict{Vector, Int64}, optmizer, display::Bool=false)
-
-        ### Solving ILP using JuMP 
-        ### HiGHS It uses parallelized 'Dual revised simplex method'
+        
+        # M is the ground set of items
+        # S is a dictionary with some valuations
 
         #model construction
         l = collect(keys(S))
