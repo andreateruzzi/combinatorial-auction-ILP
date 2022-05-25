@@ -34,7 +34,7 @@ module CAP
                 pwrset = sample(pwrset, size(M)[1]^2, replace=false)                     
             end
             val = collect(1:size(pwrset)[1]) .- rand(1:Int(ceil(sqrt( size(pwrset)[1]))))
-            val[val .≤ 0] .=1
+            val[val .≤ 0] .= 1
             sort!(pwrset, by = x -> size(x)[1])
             append!( valuations, [Dict(zip(pwrset,val))] )   
         end
@@ -85,7 +85,7 @@ module CAP
     function cap_solver(M::Vector{String}, S::Dict{Vector, Int64}, optmizer, display::Bool=false)
         
         # M is the ground set of items
-        # S is a dictionary with some valuations
+        # S is a dictionary with some valuation
 
         #model construction
         l = collect(keys(S))
@@ -135,7 +135,6 @@ module CAP
         @assert(items==unique(items))
     return  winner, objective_value(model)
     end
-
 
 
     function greedy_solver(M::Vector{String}, S::Dict{Vector, Int64})
